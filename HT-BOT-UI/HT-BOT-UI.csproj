@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,6 +77,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HT-BOT-IPC\HT-BOT-IPC.csproj">
+      <Project>{607007bb-7ea4-4ebd-90a1-0471ec707404}</Project>
+      <Name>HT-BOT-IPC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InputSimulator\InputSimulator.csproj">
+      <Project>{1bdad4d6-e83c-49d5-a054-6d005f8c41fd}</Project>
+      <Name>InputSimulator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
