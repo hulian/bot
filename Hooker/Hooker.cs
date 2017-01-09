@@ -13,7 +13,7 @@ namespace Hooker
 		static void Main(string[] args)
 		{
 
-			var dataPath = "H:\\game\\Hearthstone\\Hearthstone_Data\\";
+			var dataPath = "D:\\Hearthstone\\Hearthstone_Data";
 			foreach (var s in new[] { "Assembly-CSharp-firstpass", "Assembly-CSharp" }) {
 				var inStream = File.Open(s + ".dll", FileMode.Open, FileAccess.Read);
 				var scriptAssembly = AssemblyDefinition.ReadAssembly(inStream);
