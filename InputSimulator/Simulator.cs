@@ -8,5 +8,13 @@ namespace InputSimulator
 {
     public class Simulator
     {
+        IntPtr hWnd;
+
+        public Simulator()
+        {
+            
+
+        }
+
     }
 }
