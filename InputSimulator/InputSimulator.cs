@@ -28,9 +28,16 @@ namespace Simulator
         public const int WM_NCACTIVE = 0x086;
         public const int WM_ACTIVE = 0x006;
         public const int WM_ACTIVATEAPP = 0x01C;
+        public const int WM_SETCURSOR = 0x0020;
+        public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        public const UInt32 SWP_NOSIZE = 0x0001;
+        public const UInt32 SWP_NOMOVE = 0x0002;
+        public const UInt32 TOPMOST_FLAGS = SWP_NOMOVE | SWP_NOSIZE;
+
 
         private IntPtr handle;
         private string classNmae, windowName;
+
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -71,8 +78,8 @@ namespace Simulator
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr SetFocus(IntPtr hWnd);
@@ -87,6 +94,123 @@ namespace Simulator
         [DllImport("user32.dll")]
         static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        static extern bool PtInRect([In] ref RECT lprc, Point pt);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool BringWindowToTop(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, uint nCmdShow);
+
+        [DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left, Top, Right, Bottom;
+
+            public RECT(int left, int top, int right, int bottom)
+            {
+                Left = left;
+                Top = top;
+                Right = right;
+                Bottom = bottom;
+            }
+
+            public RECT(System.Drawing.Rectangle r) : this(r.Left, r.Top, r.Right, r.Bottom) { }
+
+            public int X
+            {
+                get { return Left; }
+                set { Right -= (Left - value); Left = value; }
+            }
+
+            public int Y
+            {
+                get { return Top; }
+                set { Bottom -= (Top - value); Top = value; }
+            }
+
+            public int Height
+            {
+                get { return Bottom - Top; }
+                set { Bottom = value + Top; }
+            }
+
+            public int Width
+            {
+                get { return Right - Left; }
+                set { Right = value + Left; }
+            }
+
+            public System.Drawing.Point Location
+            {
+                get { return new System.Drawing.Point(Left, Top); }
+                set { X = value.X; Y = value.Y; }
+            }
+
+            public System.Drawing.Size Size
+            {
+                get { return new System.Drawing.Size(Width, Height); }
+                set { Width = value.Width; Height = value.Height; }
+            }
+
+            public static implicit operator System.Drawing.Rectangle(RECT r)
+            {
+                return new System.Drawing.Rectangle(r.Left, r.Top, r.Width, r.Height);
+            }
+
+            public static implicit operator RECT(System.Drawing.Rectangle r)
+            {
+                return new RECT(r);
+            }
+
+            public static bool operator ==(RECT r1, RECT r2)
+            {
+                return r1.Equals(r2);
+            }
+
+            public static bool operator !=(RECT r1, RECT r2)
+            {
+                return !r1.Equals(r2);
+            }
+
+            public bool Equals(RECT r)
+            {
+                return r.Left == Left && r.Top == Top && r.Right == Right && r.Bottom == Bottom;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is RECT)
+                    return Equals((RECT)obj);
+                else if (obj is System.Drawing.Rectangle)
+                    return Equals(new RECT((System.Drawing.Rectangle)obj));
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return ((System.Drawing.Rectangle)this).GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{{Left={0},Top={1},Right={2},Bottom={3}}}", Left, Top, Right, Bottom);
+            }
+        }
 
         public InputSimulator(string classNmae, string windowName)
         {
@@ -102,7 +226,7 @@ namespace Simulator
 
         private IntPtr getHandle()
         {
-            if (handle == null)
+            if (handle == IntPtr.Zero)
             {
                 handle = FindWindow(classNmae, windowName);
             }
@@ -113,7 +237,7 @@ namespace Simulator
         public void click(int x, int y)
         {
             IntPtr handle =  getHandle();
-            SetForegroundWindow(handle);
+            forceOnTop();
             SendMessage(handle, WM_LBUTTONDOWN, (IntPtr)0, MakeLParam(x, y));
             SendMessage(handle, WM_LBUTTONUP, (IntPtr)0, MakeLParam(x, y));
 
@@ -123,20 +247,39 @@ namespace Simulator
         {
 
             IntPtr handle = getHandle();
-            SetForegroundWindow(handle);
-            SendMessage(handle, WM_NCHITTEST, (IntPtr)0, MakeLParam(x, y));
-            SendMessage(handle, 0x20, handle, (IntPtr)0x2000001);
-            SendMessage(handle, WM_MOUSEMOVE, (IntPtr)0, MakeLParam(x, y));
+            forceOnTop();
+            SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+            Debug.WriteLine(x + ":" + y);
 
-            //Debug.WriteLine(x + ":" + y);
-            if (isMouseInWindow(handle))
+            bool inWindow = isMouseInWindow(handle);
+            if (inWindow)
             {
-                Point p = new Point(x,y);
-                 ClientToScreen(handle, ref p);
-                 Debug.WriteLine(p.X+ ":" + p.Y);
-                 SetCursorPos((uint)p.X, (uint)p.Y);
+                Point p = new Point(x, y);
+                ClientToScreen(handle, ref p);
+                Debug.WriteLine(p.X + ":" + p.Y);
+                SetCursorPos((uint)p.X, (uint)p.Y);
+            }
+            else
+            {
+
+                SendMessage(handle, WM_NCHITTEST, (IntPtr)0, MakeLParam(x, y));
+                SendMessage(handle, 0x20, handle, (IntPtr)0x2000001);
+                SendMessage(handle, WM_SETCURSOR, (IntPtr)0, MakeLParam(x, y));
+                SendMessage(handle, WM_MOUSEMOVE, (IntPtr)0, MakeLParam(x, y));
+
             }
 
+
+        }
+
+        private void forceOnTop()
+        {
+            if (GetForegroundWindow() != handle)
+            {
+                SetForegroundWindow(handle);
+            }
+           BringWindowToTop(handle);
+           ShowWindow(handle, 5);
         }
 
         private bool isMouseInWindow(IntPtr handle)
@@ -146,7 +289,18 @@ namespace Simulator
             {
                 return false;       // No window is currently activated
             }
-            return activatedHandle == handle;
+
+            if (activatedHandle == handle)
+            {
+                Point point = new Point();
+                GetCursorPos(ref point);
+                RECT rect;
+                GetWindowRect(handle, out rect);
+                return PtInRect(ref rect, point);
+
+            }
+
+            return false;
 
         }
 

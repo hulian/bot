@@ -7,9 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-UI", "HT-BOT-UI\HT-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputSimulator", "InputSimulator\InputSimulator.csproj", "{1BDAD4D6-E83C-49D5-A054-6D005F8C41FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hooker", "Hooker\Hooker.csproj", "{33A0B54A-F06A-4C79-98F7-D87AEDFD5C2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-Hooker", "Hooker\HT-BOT-Hooker.csproj", "{33A0B54A-F06A-4C79-98F7-D87AEDFD5C2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HookRegistry", "HookRegistry\HookRegistry.csproj", "{2182CF16-EAFC-45FA-B4FB-274D05EB027E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-HookRegistry", "HookRegistry\HT-BOT-HookRegistry.csproj", "{2182CF16-EAFC-45FA-B4FB-274D05EB027E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-UnitTest", "HT-BOT-UnitTest\HT-BOT-UnitTest.csproj", "{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-IPC", "HT-BOT-IPC\HT-BOT-IPC.csproj", "{607007BB-7EA4-4EBD-90A1-0471EC707404}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{2182CF16-EAFC-45FA-B4FB-274D05EB027E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2182CF16-EAFC-45FA-B4FB-274D05EB027E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2182CF16-EAFC-45FA-B4FB-274D05EB027E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
