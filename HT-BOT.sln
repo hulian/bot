@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-HookRegistry", "Hook
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-UnitTest", "HT-BOT-UnitTest\HT-BOT-UnitTest.csproj", "{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-IPC", "HT-BOT-IPC\HT-BOT-IPC.csproj", "{607007BB-7EA4-4EBD-90A1-0471EC707404}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HT-BOT-State", "HT-BOT-State\HT-BOT-State.csproj", "{95F3ADD5-6FBC-4422-82AA-8C23C54D30F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B78E7F4D-3269-4074-ABBE-6B78B6DF57E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{607007BB-7EA4-4EBD-90A1-0471EC707404}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95F3ADD5-6FBC-4422-82AA-8C23C54D30F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95F3ADD5-6FBC-4422-82AA-8C23C54D30F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95F3ADD5-6FBC-4422-82AA-8C23C54D30F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95F3ADD5-6FBC-4422-82AA-8C23C54D30F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -33,16 +33,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GameStatusServiceClient.cs" />
     <Compile Include="HookRegistry.cs" />
-    <Compile Include="Test.cs" />
+    <Compile Include="GameStatusWatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System">
       <HintPath>..\lib\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>
@@ -54,6 +51,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\lib\UnityEngine.UI.dll</HintPath>
@@ -61,12 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HT-BOT-IPC\HT-BOT-IPC.csproj">
-      <Project>{607007bb-7ea4-4ebd-90a1-0471ec707404}</Project>
-      <Name>HT-BOT-IPC</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

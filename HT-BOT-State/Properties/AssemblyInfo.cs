@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("HT-BOT-IPC")]
+[assembly: AssemblyTitle("HT-BOT-State")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HT-BOT-IPC")]
+[assembly: AssemblyProduct("HT-BOT-State")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("607007bb-7ea4-4ebd-90a1-0471ec707404")]
+[assembly: Guid("95f3add5-6fbc-4422-82aa-8c23c54d30f0")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
