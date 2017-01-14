@@ -13,12 +13,12 @@ namespace Hooker
 		static void Main(string[] args)
 		{
 
-			var dataPath = "D:\\Hearthstone\\Hearthstone_Data";
+			var dataPath = "D:\\Program Files (x86)\\Hearthstone\\Hearthstone_Data";
 			foreach (var s in new[] { "Assembly-CSharp-firstpass", "Assembly-CSharp" }) {
 				var inStream = File.Open(s + ".dll", FileMode.Open, FileAccess.Read);
 				var scriptAssembly = AssemblyDefinition.ReadAssembly(inStream);
 				var hooker = new Hooker(scriptAssembly.MainModule);
-				using (var fs = new FileStream("example_hooks", FileMode.Open, FileAccess.Read))
+				using (var fs = new FileStream("../../example_hooks", FileMode.Open, FileAccess.Read))
 				using (var sr = new StreamReader(fs))
 					while (!sr.EndOfStream) {
 						var line = sr.ReadLine();

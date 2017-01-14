@@ -3,16 +3,32 @@ using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
 using System;
+using System.Net.Sockets;
 
 namespace Hooks
 {
 	[RuntimeHook]
 	class GameStatusWatcher
 	{
+        private TcpClient client;
+
+        public void updateState()
+        {
+            client = new TcpClient();
+            client.Connect("127.0.0.1", 8080);
+        }
        
 		public GameStatusWatcher()
 		{
 			HookRegistry.Register(OnCall);
+            try
+            {
+                updateState();
+            }
+            catch(Exception e)
+            {
+                File.AppendAllText("data.log", JsonConvert.SerializeObject(e) + System.Environment.NewLine);
+            }
             File.AppendAllText("data.log", "init data log" + System.Environment.NewLine);
         }
 
