@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Simulator;
+using HT_BOT_InputSimulator;
 using System.Threading;
 
 namespace HT_BOT_UnitTest

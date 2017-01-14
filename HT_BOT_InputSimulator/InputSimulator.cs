@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 
-namespace Simulator
+namespace HT_BOT_InputSimulator
 {
     public class InputSimulator
     {

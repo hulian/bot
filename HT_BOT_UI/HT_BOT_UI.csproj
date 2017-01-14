@@ -79,13 +79,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HT-BOT-State\HT-BOT-State.csproj">
+    <ProjectReference Include="..\HT_BOT_State\HT_BOT_State.csproj">
       <Project>{95f3add5-6fbc-4422-82aa-8c23c54d30f0}</Project>
-      <Name>HT-BOT-State</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InputSimulator\InputSimulator.csproj">
-      <Project>{1bdad4d6-e83c-49d5-a054-6d005f8c41fd}</Project>
-      <Name>InputSimulator</Name>
+      <Name>HT_BOT_State</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

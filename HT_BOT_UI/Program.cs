@@ -18,7 +18,7 @@ namespace WindowsFormsApplication1
         [STAThread]
         static void Main()
         {
-            botState = new BotState();
+            botState = new BotState("");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

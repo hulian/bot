@@ -55,9 +55,9 @@
     <None Include="example_hooks" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HookRegistry\HT-BOT-HookRegistry.csproj">
+    <ProjectReference Include="..\HT_BOT_HookRegistry\HT_BOT_HookRegistry.csproj">
       <Project>{2182cf16-eafc-45fa-b4fb-274d05eb027e}</Project>
-      <Name>HT-BOT-HookRegistry</Name>
+      <Name>HT_BOT_HookRegistry</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

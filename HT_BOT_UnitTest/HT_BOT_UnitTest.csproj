@@ -54,9 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InputSimulator\InputSimulator.csproj">
-      <Project>{1BDAD4D6-E83C-49D5-A054-6D005F8C41FD}</Project>
-      <Name>InputSimulator</Name>
+    <ProjectReference Include="..\HT_BOT_InputSimulator\HT_BOT_InputSimulator.csproj">
+      <Project>{1bdad4d6-e83c-49d5-a054-6d005f8c41fd}</Project>
+      <Name>HT_BOT_InputSimulator</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
