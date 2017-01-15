@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using System;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Hooks
 {
@@ -12,23 +13,19 @@ namespace Hooks
 	{
         private TcpClient client;
 
-        public void updateState()
+        public void updateState(string data)
         {
             client = new TcpClient();
-            client.Connect("127.0.0.1", 8080);
+            client.Connect("127.0.0.1", 9900);
+            StreamWriter sWriter = new StreamWriter(client.GetStream(), Encoding.UTF8);
+            sWriter.WriteLine(data);
+            sWriter.Flush();
+            client.Close();
         }
        
 		public GameStatusWatcher()
 		{
 			HookRegistry.Register(OnCall);
-            try
-            {
-                updateState();
-            }
-            catch(Exception e)
-            {
-                File.AppendAllText("data.log", JsonConvert.SerializeObject(e) + System.Environment.NewLine);
-            }
             File.AppendAllText("data.log", "init data log" + System.Environment.NewLine);
         }
 
@@ -54,6 +51,7 @@ namespace Hooks
 
                 } if ("SetNextMode".Equals(methodName))
                 {
+                    updateState("mode:" + args[0]);
                     File.AppendAllText("data.log", "MODE"+":"+ (SceneMgr.Mode)args[0] + System.Environment.NewLine);
                 }
                 else
@@ -63,6 +61,7 @@ namespace Hooks
                     { 
                         Vector3 P = Camera.main.WorldToScreenPoint(tournamentButton.transform.position);
                         P.y = Screen.height - P.y;
+                        updateState("button"+":"+tournamentButton.name + ":" + P + System.Environment.NewLine);
                         File.AppendAllText("data.log","BUTTON" + ":" + tournamentButton.name + ":" + P + System.Environment.NewLine);
                     }
 

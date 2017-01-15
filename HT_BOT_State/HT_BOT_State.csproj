@@ -44,14 +44,18 @@
     <Compile Include="BotStateMechine.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="ipc\IIpcServer.cs" />
-    <Compile Include="ipc\impl\ClientState.cs" />
     <Compile Include="ipc\impl\IpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="state\impl\BattleState.cs" />
     <Compile Include="state\impl\GameModeState.cs" />
     <Compile Include="state\IStateMachine.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\HT_BOT_InputSimulator\HT_BOT_InputSimulator.csproj">
+      <Project>{1BDAD4D6-E83C-49D5-A054-6D005F8C41FD}</Project>
+      <Name>HT_BOT_InputSimulator</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

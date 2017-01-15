@@ -27,7 +27,7 @@ namespace HT_BOT_State.state.impl
 
         public void updateState(string state)
         {
-            throw new NotImplementedException();
+            this.model = state;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace HT_BOT_State.ipc
     interface IIpcServer
     {
         void start();
-        void setHandler(Action<byte[]> action);
+        void setHandler(Action<string> action);
         void stop();
 
     }

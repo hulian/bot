@@ -20,12 +20,23 @@ namespace WindowsFormsApplication1
         [STAThread]
         static void Main()
         {
-            new Thread( new ParameterizedThreadStart(null)).Start();
+           // new Thread(new ParameterizedThreadStart(null)).Start();
             botStateMechine = new BotStateMechine();
+            botStateMechine.start();
+
+
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            Form form = new Form1();
+            form.FormClosing += onFormClosing;
+            Application.Run(form);
+        }
+
+        private static void onFormClosing(object sender, FormClosingEventArgs e)
+        {
+            botStateMechine.stop();
         }
     }
 }

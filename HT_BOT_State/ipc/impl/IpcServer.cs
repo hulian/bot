@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using System.Diagnostics;
+using System.Threading;
+using System.IO;
 
 namespace HT_BOT_State.ipc.impl
 {
     class IpcServer : IIpcServer
     {
-        private int port;
+        private int port=0;
         private string ip;
         private TcpListener tcpListener;
-        private Action<byte[]> action;
-        private bool isUp;
+        private Action<String> action;
+        private bool isUp=true;
+        private Thread thread;
 
 
         public IpcServer()
@@ -27,49 +25,72 @@ namespace HT_BOT_State.ipc.impl
             tcpListener = new TcpListener( IPAddress.Any, port);
         }
 
-        public void setHandler( Action<byte[]> action )
+        public void setHandler( Action<string> action )
         {
             this.action = action;
         }
 
         public void start()
         {
-            Debug.WriteLine("start server");
+            thread = new Thread(new ThreadStart(WorkThreadFunction));
+            thread.Start();
+            
+        }
+
+        private void WorkThreadFunction()
+        {
+            File.AppendAllText("net.log","start server"+Environment.NewLine);
             this.tcpListener.Start();
+
+           
+
+            this.tcpListener.BeginAcceptTcpClient(new AsyncCallback(acceptClient), this.tcpListener);
+
             isUp = true;
-            Byte[] bytes = new Byte[256];
             while (isUp)
             {
-                if (!isUp)
-                {
-                    Debug.WriteLine("stop server");
-                    break;
-                }
-                Debug.WriteLine("Waiting for a connection... ");
+                Thread.Sleep(1000);
+            }
+        }
 
-                TcpClient client =  this.tcpListener.AcceptTcpClient();
-                Debug.WriteLine("client conneted :"+client);
+        private void acceptClient( IAsyncResult iar )
+        {
 
-                // Get a stream object for reading and writing
+            if (!isUp)
+            {
+                File.AppendAllText("net.log", "server stoped"+Environment.NewLine);
+                return;
+            }
+
+            using (TcpClient client = this.tcpListener.EndAcceptTcpClient(iar))
+            {
+                File.AppendAllText("net.log", "client conneted :" + client + Environment.NewLine);
+
                 NetworkStream stream = client.GetStream();
 
+                Byte[] bytes = new Byte[256];
                 int i;
 
-                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                while (stream.DataAvailable)
                 {
-
-                    Debug.WriteLine("Received: {0} byte", i);
+                    StreamReader sr = new StreamReader(stream);
+                    string data = sr.ReadLine();
+                    File.AppendAllText("net.log", "Received: " + sr.ReadLine()+ Environment.NewLine);
+                    if (data.Length > 0)
+                    {
+                        action.Invoke(data);
+                    }
 
                 }
-
-                action.Invoke(bytes);
             }
-            
+
+            this.tcpListener.BeginAcceptTcpClient(new AsyncCallback(acceptClient), this.tcpListener);
         }
 
         public void stop()
         {
             isUp = false;
+            this.tcpListener.Stop();
         }
     }
 }
