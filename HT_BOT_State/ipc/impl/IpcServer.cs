@@ -14,6 +14,7 @@ namespace HT_BOT_State.ipc.impl
         private Action<String> action;
         private bool isUp=true;
         private Thread thread;
+        private TcpClientState tcpClientState;
 
 
         public IpcServer()
@@ -42,8 +43,6 @@ namespace HT_BOT_State.ipc.impl
             File.AppendAllText("net.log","start server"+Environment.NewLine);
             this.tcpListener.Start();
 
-           
-
             this.tcpListener.BeginAcceptTcpClient(new AsyncCallback(acceptClient), this.tcpListener);
 
             isUp = true;
@@ -58,33 +57,58 @@ namespace HT_BOT_State.ipc.impl
 
             if (!isUp)
             {
-                File.AppendAllText("net.log", "server stoped"+Environment.NewLine);
+                File.AppendAllText("net.log", "stop accept client"+Environment.NewLine);
                 return;
             }
 
-            using (TcpClient client = this.tcpListener.EndAcceptTcpClient(iar))
+            TcpClient client = this.tcpListener.EndAcceptTcpClient(iar);
+
+            File.AppendAllText("net.log", "client conneted :" + client + Environment.NewLine);
+
+            tcpClientState = new TcpClientState(client);
+
+            tcpClientState.stream.BeginRead(tcpClientState.buffer, 0, tcpClientState.buffer.Length, new AsyncCallback(receiveReadData), tcpClientState);
+
+            tcpListener.BeginAcceptTcpClient(new AsyncCallback(acceptClient), this.tcpListener);
+        }
+
+        private void receiveReadData(IAsyncResult ar)
+        {
+            TcpClientState state = (TcpClientState)ar.AsyncState;
+
+            int bytesRead = state.stream.EndRead(ar);
+
+            if (bytesRead > 0)
             {
-                File.AppendAllText("net.log", "client conneted :" + client + Environment.NewLine);
 
-                NetworkStream stream = client.GetStream();
+                File.AppendAllText("net.log", "received data" + bytesRead + Environment.NewLine);
 
-                Byte[] bytes = new Byte[256];
-                int i;
+                MemoryStream ms = new MemoryStream(tcpClientState.buffer);
+                ms.Seek(0, 0);
+                StreamReader sr = new StreamReader(ms);
 
-                while (stream.DataAvailable)
-                {
-                    StreamReader sr = new StreamReader(stream);
-                    string data = sr.ReadLine();
-                    File.AppendAllText("net.log", "Received: " + sr.ReadLine()+ Environment.NewLine);
-                    if (data.Length > 0)
-                    {
-                        action.Invoke(data);
-                    }
-
-                }
+                 action.Invoke(sr.ReadLine());
+                
             }
 
-            this.tcpListener.BeginAcceptTcpClient(new AsyncCallback(acceptClient), this.tcpListener);
+            Thread.Sleep(10);
+
+            if (state.tcpClient != null && !state.tcpClient.Connected)
+            {
+                File.AppendAllText("net.log", "client closed" + Environment.NewLine);
+                state.stream.Close();
+                state.tcpClient.Close();
+                return;
+            }
+
+            if (!isUp)
+            {
+                File.AppendAllText("net.log", "stop receive data" + Environment.NewLine);
+                return;
+            }
+
+            state.stream.BeginRead(state.buffer, 0, state.buffer.Length, new AsyncCallback(receiveReadData), state);
+            
         }
 
         public void stop()

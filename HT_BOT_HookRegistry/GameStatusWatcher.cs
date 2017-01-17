@@ -13,66 +13,78 @@ namespace Hooks
 	{
         private TcpClient client;
 
+        private StreamWriter sWriter;
+
+        private bool connectIpc()
+        {
+            if(client==null || client.Connected == false)
+            {
+                client = new TcpClient();
+                client.Connect("127.0.0.1", 9900);
+                if (client.Connected)
+                {
+                    sWriter = new StreamWriter(client.GetStream(), Encoding.UTF8);
+                }
+                else
+                {
+                    return false;
+                }              
+            }
+
+            return true;
+        }
+
         public void updateState(string data)
         {
-            client = new TcpClient();
-            client.Connect("127.0.0.1", 9900);
-            StreamWriter sWriter = new StreamWriter(client.GetStream(), Encoding.UTF8);
-            sWriter.WriteLine(data);
-            sWriter.Flush();
-            client.Close();
+            if (connectIpc())
+            {
+                sWriter.WriteLine(data);
+                sWriter.Flush();
+            }
         }
        
 		public GameStatusWatcher()
 		{
 			HookRegistry.Register(OnCall);
-            File.AppendAllText("data.log", "init data log" + System.Environment.NewLine);
+            System.Timers.Timer t = new System.Timers.Timer(1000);   //实例化Timer类，设置间隔时间为10000毫秒；   
+            t.Elapsed += new System.Timers.ElapsedEventHandler(theout); //到达时间的时候执行事件；   
+            t.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
+            t.Enabled = true;     //是否执行System.Timers.Timer.Elapsed事件；   
+            File.WriteAllText("data.log", "init data log" + System.Environment.NewLine);
+
         }
 
-		object OnCall(string typeName, string methodName, object thisObj, object[] args)
-		{
-            try
+        public void theout(object source, System.Timers.ElapsedEventArgs e)
+        {
+
+            GameObject sceneMgr = GameObject.Find("SceneMgr");
+            if (sceneMgr != null )
             {
-                if ("OnPowerHistory".Equals(methodName))
+                String mode = ((SceneMgr)(sceneMgr.GetComponent<MonoBehaviour>())).GetMode().ToString();
+                File.AppendAllText("data.log", "MODE" + ":" + mode + System.Environment.NewLine);
+                updateState("mode:" + mode);
+            }
+
+            File.AppendAllText("data.log", "Timer scan game object ......" + System.Environment.NewLine);
+            GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+            foreach (GameObject go in allObjects)
+            {
+                if (go.activeInHierarchy)
                 {
-                    GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-                    foreach (GameObject go in allObjects)
+                    if (go.activeInHierarchy)
                     {
-                        if (go.activeInHierarchy)
-                        {
-                            if (go.name.Contains("cardId"))
-                            {
-                                Vector3 boxPosition = Camera.main.WorldToScreenPoint(go.transform.position);
-                                boxPosition.y = Screen.height - boxPosition.y;
-                                File.AppendAllText("data.log", "CARD" + ":" + go.name + ":" + boxPosition + System.Environment.NewLine);
-                            }
-                        }
+                        Vector3 boxPosition = Camera.main.WorldToScreenPoint(go.transform.position);
+                        boxPosition.y = Screen.height - boxPosition.y;
+                        File.AppendAllText("data.log", "CARD" + ":" + go.name + ":" + boxPosition + System.Environment.NewLine);
+                        updateState("CARD" + ":" + go.name + ":" + boxPosition);
                     }
-
-                } if ("SetNextMode".Equals(methodName))
-                {
-                    updateState("mode:" + args[0]);
-                    File.AppendAllText("data.log", "MODE"+":"+ (SceneMgr.Mode)args[0] + System.Environment.NewLine);
                 }
-                else
-                {
-                    GameObject tournamentButton = GameObject.Find("TournamentButton");
-                    if(tournamentButton != null)
-                    { 
-                        Vector3 P = Camera.main.WorldToScreenPoint(tournamentButton.transform.position);
-                        P.y = Screen.height - P.y;
-                        updateState("button"+":"+tournamentButton.name + ":" + P + System.Environment.NewLine);
-                        File.AppendAllText("data.log","BUTTON" + ":" + tournamentButton.name + ":" + P + System.Environment.NewLine);
-                    }
-
-                }
-
-                
             }
-            catch(Exception e)
-            {
-                File.AppendAllText("data.log", JsonConvert.SerializeObject(e) + System.Environment.NewLine);
-            }
+  
+        }
+
+        object OnCall(string typeName, string methodName, object thisObj, object[] args)
+		{
 
             return null;
 			

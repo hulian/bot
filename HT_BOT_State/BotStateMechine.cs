@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HT_BOT_State.ipc;
 using HT_BOT_State.ipc.impl;
 using HT_BOT_State.state;
 using HT_BOT_State.state.impl;
-using System.Diagnostics;
 using System.IO;
 using HT_BOT_InputSimulator;
 
@@ -26,7 +21,7 @@ namespace HT_BOT_State
               gameModeState = new GameModeState();
               battleState = new BattleState();
               ipcServer.setHandler(handler);
-                inputSimulator = new InputSimulator("UnityWndClass", "炉石传说");
+              inputSimulator = new InputSimulator("UnityWndClass", "炉石传说");
 
         }
 
@@ -42,8 +37,7 @@ namespace HT_BOT_State
             if(datas[1] == "HUB")
             {
                 gameModeState.updateState(datas[1]);
-                inputSimulator.moveTo(0, 0);
-                inputSimulator.click(0, 0);
+                inputSimulator.moveAndClik(0, 0);
 
             }
         }

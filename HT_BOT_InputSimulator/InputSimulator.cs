@@ -234,6 +234,12 @@ namespace HT_BOT_InputSimulator
             
         }
 
+        public void moveAndClik(int x, int y)
+        {
+            moveTo(x, y);
+            click(x, y);
+        }
+
         public void click(int x, int y)
         {
             IntPtr handle =  getHandle();
