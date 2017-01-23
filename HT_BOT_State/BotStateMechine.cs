@@ -5,6 +5,8 @@ using HT_BOT_State.state;
 using HT_BOT_State.state.impl;
 using System.IO;
 using HT_BOT_InputSimulator;
+using Newtonsoft.Json;
+using Hooks;
 
 namespace HT_BOT_State
 {
@@ -14,6 +16,7 @@ namespace HT_BOT_State
         private IStateMachine gameModeState;
         private IStateMachine battleState;
         private InputSimulator inputSimulator;
+        private JsonSerializer jsonSerializer;
 
         public BotStateMechine()
         {
@@ -21,6 +24,7 @@ namespace HT_BOT_State
               gameModeState = new GameModeState();
               battleState = new BattleState();
               ipcServer.setHandler(handler);
+              jsonSerializer = JsonSerializer.Create();
               inputSimulator = new InputSimulator("UnityWndClass", "炉石传说");
 
         }
@@ -33,13 +37,35 @@ namespace HT_BOT_State
         void handler( string data )
         {
             File.AppendAllText("net.log","handle data:"+ data+Environment.NewLine);
-            string[] datas = data.Split(':');
-            if(datas[1] == "HUB")
+            HtStatus htStatus = jsonSerializer.Deserialize<HtStatus>(new JsonTextReader( new StringReader(data)));
+            if( htStatus==null)
             {
-                gameModeState.updateState(datas[1]);
-                inputSimulator.moveAndClik(0, 0);
+                return;
+            }
+            switch (htStatus.mode)
+            {
+                case "HUB":
+                    gameModeState.updateState(htStatus.mode);
+                    Button button = null;
+                    if (htStatus.buttons.TryGetValue("TournamentButton", out button))
+                    {
+                        inputSimulator.moveAndClik((int)button.x, (int)button.y);
+                    }
+                    break;
+
+                case "TOURNAMENT":
+                    if (htStatus.buttons.TryGetValue("DeckName", out button))
+                    {
+                        inputSimulator.moveAndClik((int)button.x, (int)button.y);
+                    }
+                    break;
+
+                default:
+                    File.AppendAllText("net.log", "unhandled mode:" + htStatus.mode + Environment.NewLine);
+                    break;
 
             }
+
         }
 
         public void stop()

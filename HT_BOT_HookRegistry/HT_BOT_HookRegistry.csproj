@@ -33,8 +33,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Button.cs" />
     <Compile Include="HookRegistry.cs" />
     <Compile Include="GameStatusWatcher.cs" />
+    <Compile Include="HtStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System">

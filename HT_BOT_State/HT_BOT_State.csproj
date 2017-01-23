@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -44,6 +50,8 @@
     <Compile Include="BotStateMechine.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="ipc\IIpcServer.cs" />
+    <Compile Include="Button.cs" />
+    <Compile Include="HtStatus.cs" />
     <Compile Include="ipc\impl\IpcServer.cs" />
     <Compile Include="ipc\impl\TcpClientState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
